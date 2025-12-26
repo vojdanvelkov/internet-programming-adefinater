@@ -29,20 +29,24 @@ npm --version
 1. **Clone the repository**
    ```bash
    git clone https://github.com/vojdanvelkov/internet-programming-adefinater.git
-   cd internet-programming-adefinater
    ```
 
-2. **Install dependencies**
+2. **Navigate to the project folder**
+   ```bash
+   cd internet-programming-adefinater/ProjectPizza
+   ```
+
+3. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Start the development server**
+4. **Start the development server**
    ```bash
    npm start
    ```
 
-4. **Open in browser**
+5. **Open in browser**
    ```
    http://localhost:4200
    ```
