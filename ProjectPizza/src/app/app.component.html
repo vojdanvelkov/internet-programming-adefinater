@@ -1,0 +1,32 @@
+<nav>
+  <div class="container">
+    <a routerLink="/menu" class="logo">
+      🍕 <span class="logo-text"><span>P</span><span class="green">i</span><span>z</span><span class="green">z</span><span>a</span> <span>P</span><span class="green">a</span><span>l</span><span class="green">a</span><span>c</span><span class="green">e</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a routerLink="/menu" routerLinkActive="active">Menu</a></li>
+      <li><a routerLink="/builder" routerLinkActive="active">Build Pizza</a></li>
+      <li><a routerLink="/cart" routerLinkActive="active">
+        Cart
+        <span class="cart-badge" *ngIf="isLoggedIn && cartCount > 0">{{ cartCount }}</span>
+      </a></li>
+      <li><a routerLink="/orders" routerLinkActive="active">Track Order</a></li>
+      <li *ngIf="!isLoggedIn">
+        <a routerLink="/auth" routerLinkActive="active">Sign Up / Login</a>
+      </li>
+      <li *ngIf="isLoggedIn">
+        <a (click)="logout()" class="logout-link">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <router-outlet></router-outlet>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; Pizza Palace. The best pizza in Macedonia.</p>
+  </div>
+</footer>

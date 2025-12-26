@@ -1,0 +1,126 @@
+<div class="page">
+  <div class="hero builder-hero">
+    <div class="hero-line"></div>
+  </div>
+
+  <div class="builder-container">
+    <!-- Toppings Panel -->
+    <div class="toppings-panel card">
+      <h3>Available Toppings</h3>
+      <p class="text-muted text-sm mb-2">Drag toppings to your pizza</p>
+      
+      <div class="toppings-grid">
+        <div 
+          class="topping-item draggable"
+          *ngFor="let topping of availableToppings"
+          draggable="true"
+          (dragstart)="onDragStart($event, topping)"
+          (click)="addTopping(topping)"
+        >
+          <span class="topping-emoji">{{ topping.emoji }}</span>
+          <span class="topping-name">{{ topping.name }}</span>
+          <span class="topping-price">+${{ topping.price.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pizza Builder -->
+    <div class="pizza-builder">
+      <div 
+        class="pizza-canvas dropzone"
+        [class.dragover]="isDragOver"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event)"
+      >
+        <div class="pizza-base">
+          <span class="base-emoji">🍕</span>
+        </div>
+        
+        <div class="selected-toppings" *ngIf="selectedToppings.length > 0">
+          <div 
+            class="selected-topping"
+            *ngFor="let topping of selectedToppings; let i = index"
+            (click)="removeTopping(i)"
+            title="Click to remove"
+          >
+            <span>{{ topping.emoji }}</span>
+          </div>
+        </div>
+        
+        <p class="drop-hint" *ngIf="selectedToppings.length === 0">
+          Drop toppings inside the box or click on them to add
+        </p>
+      </div>
+
+      <!-- Selected Toppings List -->
+      <div class="toppings-list card" *ngIf="selectedToppings.length > 0">
+        <h4>Your Toppings <span class="toppings-hint">(max 6 toppings)</span></h4>
+        <ul>
+          <li *ngFor="let topping of selectedToppings; let i = index">
+            <span>{{ topping.emoji }} {{ topping.name }}</span>
+            <span class="topping-actions">
+              <span class="text-muted">${{ topping.price.toFixed(2) }}</span>
+              <button class="btn-remove" (click)="removeTopping(i)">✕</button>
+            </span>
+          </li>
+        </ul>
+        <button class="btn btn-outline btn-sm" (click)="clearToppings()">Clear All</button>
+      </div>
+    </div>
+
+    <!-- Order Panel -->
+    <div class="order-panel card">
+      <h3>Customize & Order</h3>
+      
+      <div class="form-group">
+        <label for="pizzaName">Pizza Name (optional)</label>
+        <input 
+          id="pizzaName"
+          type="text" 
+          [(ngModel)]="pizzaName" 
+          placeholder="My Special Pizza"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="size">Size</label>
+        <select id="size" [(ngModel)]="selectedSize">
+          <option *ngFor="let size of sizes" [value]="size.value">
+            {{ size.label }} (×{{ size.priceMultiplier }})
+          </option>
+        </select>
+      </div>
+
+      <div class="price-breakdown">
+        <div class="price-row">
+          <span>Base Price</span>
+          <span>${{ basePrice.toFixed(2) }}</span>
+        </div>
+        <div class="price-row">
+          <span>Toppings ({{ selectedToppings.length }})</span>
+          <span>${{ toppingsTotal.toFixed(2) }}</span>
+        </div>
+        <div class="price-row">
+          <span>Size Multiplier</span>
+          <span>×{{ currentSize.priceMultiplier }}</span>
+        </div>
+        <div class="price-row total">
+          <span>Total</span>
+          <span class="price">${{ totalPrice.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <button 
+        class="btn btn-primary btn-lg btn-block"
+        (click)="addToCart()"
+        [disabled]="selectedToppings.length === 0"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" *ngIf="toast">{{ toast }}</div>

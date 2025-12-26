@@ -1,0 +1,116 @@
+<div class="page">
+  <div class="hero menu-hero">
+    <div class="hero-line"></div>
+  </div>
+
+  <!-- Settings Toggle Button -->
+  <div class="settings-toggle-container">
+    <button class="settings-btn" (click)="showFilters = !showFilters" [class.active]="showFilters">
+      ⚙️
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters card" *ngIf="showFilters">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="search">Search</label>
+        <input 
+          id="search"
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (input)="applyFilters()"
+          placeholder="Search pizzas or ingredients..."
+        >
+      </div>
+      
+      <div class="filter-group">
+        <label for="price">Price Range</label>
+        <select id="price" [(ngModel)]="priceFilter" (change)="applyFilters()">
+          <option value="all">All Prices</option>
+          <option value="under14">Under $14</option>
+          <option value="under16">$14 - $15</option>
+          <option value="over16">$16 and over</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="sort">Sort By</label>
+        <select id="sort" [(ngModel)]="sortBy" (change)="applyFilters()">
+          <option value="name">Name</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="favorites">Favorites First</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="showFavoritesOnly" 
+            (change)="applyFilters()"
+          >
+          Show Favorites Only
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading delicious pizzas...</p>
+  </div>
+
+  <!-- Pizza Grid -->
+  <div class="pizza-grid" *ngIf="!loading">
+    <div class="pizza-card card" *ngFor="let pizza of filteredPizzas">
+      <div class="pizza-image">
+        <img 
+          *ngIf="pizza.imageUrl" 
+          [src]="pizza.imageUrl" 
+          [alt]="pizza.name"
+          class="pizza-img"
+        >
+        <span class="pizza-emoji" *ngIf="!pizza.imageUrl">🍕</span>
+        <button 
+          class="favorite" 
+          [class.active]="favoritesService.isFavorite(pizza.id)"
+          (click)="toggleFavorite(pizza.id)"
+          title="Toggle favorite"
+        >
+          {{ favoritesService.isFavorite(pizza.id) ? '★' : '☆' }}
+        </button>
+      </div>
+      <div class="card-body">
+        <h3>{{ pizza.name }}</h3>
+        <p class="ingredients" *ngIf="pizza.ingredients">
+          {{ pizza.ingredients.join(', ') }}
+        </p>
+        <div class="pizza-footer">
+          <span class="price">${{ pizza.price }}</span>
+          <button 
+            class="btn btn-primary" 
+            (click)="addToCart(pizza)"
+            [disabled]="pizza.available === false"
+          >
+            {{ pizza.available === false ? 'Unavailable' : 'Add to Cart' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredPizzas.length === 0">
+    <h3>No pizzas found</h3>
+    <p>Try adjusting your filters or search query</p>
+    <button class="btn btn-secondary" (click)="searchQuery = ''; priceFilter = 'all'; showFavoritesOnly = false; applyFilters()">
+      Clear Filters
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" *ngIf="toast">{{ toast }}</div>

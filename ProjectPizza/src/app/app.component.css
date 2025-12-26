@@ -1,0 +1,23 @@
+/* App component specific styles */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Logo text with alternating colors */
+.logo-text .green {
+  color: #2e7d32;
+}
+
+/* Mobile menu toggle (for future enhancement) */
+@media (max-width: 768px) {
+  nav .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

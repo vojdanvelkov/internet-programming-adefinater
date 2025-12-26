@@ -1,0 +1,139 @@
+<div class="page">
+  <div class="hero orders-hero">
+    <div class="hero-line"></div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-container">
+    <div class="search-box card">
+      <div class="search-input-group">
+        <input 
+          type="text" 
+          [(ngModel)]="searchId"
+          placeholder="Enter your order ID (e.g., abc123)"
+          (keyup.enter)="searchOrder()"
+        >
+        <button class="btn btn-primary" (click)="searchOrder()" [disabled]="loading">
+          {{ loading ? 'Searching...' : 'Track Order' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Finding your order...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-container card" *ngIf="error && !loading">
+    <span class="error-emoji">❌</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Order Details -->
+  <div class="order-details" *ngIf="order && !loading">
+    <!-- Status Timeline -->
+    <div class="status-card card">
+      <div class="status-header">
+        <h3>Order Status</h3>
+        <span class="badge badge-primary">{{ orderStatuses[currentStatusIndex].label }}</span>
+      </div>
+      
+      <div class="estimated-time" *ngIf="currentStatusIndex < orderStatuses.length - 1">
+        <span class="clock-icon">⏰</span>
+        Estimated delivery: <strong>{{ estimatedTime }}</strong>
+      </div>
+
+      <div class="timeline">
+        <div 
+          class="timeline-item"
+          *ngFor="let status of orderStatuses; let i = index"
+          [class.complete]="isStatusComplete(i)"
+          [class.current]="isCurrentStatus(i)"
+        >
+          <div class="timeline-marker">
+            <span class="marker-icon">{{ status.icon }}</span>
+          </div>
+          <div class="timeline-content">
+            <span class="timeline-label">{{ status.label }}</span>
+            <span class="timeline-time" *ngIf="status.time">{{ status.time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Info -->
+    <div class="info-grid">
+      <div class="info-card card">
+        <h4>📋 Order Details</h4>
+        <div class="info-row">
+          <span>Order ID</span>
+          <span class="mono">{{ order.orderId }}</span>
+        </div>
+        <div class="info-row">
+          <span>Customer</span>
+          <span>{{ order.customer }}</span>
+        </div>
+        <div class="info-row">
+          <span>Phone</span>
+          <span>{{ order.phone }}</span>
+        </div>
+        <div class="info-row">
+          <span>Priority</span>
+          <span>{{ order.priority ? 'Yes ⚡' : 'No' }}</span>
+        </div>
+      </div>
+
+      <div class="info-card card">
+        <h4>📍 Delivery Address</h4>
+        <p class="address">{{ order.address }}</p>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="items-card card">
+      <h4>🍕 Order Items</h4>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.cart">
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unitPrice.toFixed(2) }}</td>
+            <td>${{ item.totalPrice.toFixed(2) }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr *ngIf="order.priority">
+            <td colspan="3">Subtotal</td>
+            <td>${{ getSubtotal().toFixed(2) }}</td>
+          </tr>
+          <tr *ngIf="order.priority" class="priority-row">
+            <td colspan="3">Priority Fee (20%)</td>
+            <td>${{ getPriorityFee().toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td colspan="3"><strong>Total</strong></td>
+            <td><strong class="price">${{ getOrderTotal().toFixed(2) }}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Not Found -->
+  <div class="not-found card" *ngIf="searched && !order && !loading && !error">
+    <span class="not-found-emoji">🔍</span>
+    <h3>Order Not Found</h3>
+    <p class="text-muted">We couldn't find an order with that ID. Please check and try again.</p>
+  </div>
+</div>

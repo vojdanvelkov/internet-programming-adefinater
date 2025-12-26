@@ -1,0 +1,122 @@
+<div class="page">
+  <div class="admin-header">
+    <div>
+      <h1>📊 Admin Dashboard</h1>
+      <p class="text-muted">Real-time overview of your pizza business</p>
+    </div>
+    <button class="btn btn-primary" (click)="refreshData()">
+      🔄 Refresh Data
+    </button>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card card">
+      <div class="stat-icon orders-icon">📦</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.today }}</span>
+        <span class="stat-label">Orders Today</span>
+      </div>
+    </div>
+    
+    <div class="stat-card card">
+      <div class="stat-icon week-icon">📅</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.week }}</span>
+        <span class="stat-label">This Week</span>
+      </div>
+    </div>
+    
+    <div class="stat-card card">
+      <div class="stat-icon month-icon">📈</div>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats.month }}</span>
+        <span class="stat-label">This Month</span>
+      </div>
+    </div>
+    
+    <div class="stat-card card">
+      <div class="stat-icon revenue-icon">💰</div>
+      <div class="stat-content">
+        <span class="stat-value">${{ stats.revenue.toFixed(0) }}</span>
+        <span class="stat-label">Total Revenue</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-grid">
+    <div class="chart-card card">
+      <h3>📈 Weekly Sales Trend</h3>
+      <div class="chart-container">
+        <canvas #salesChart></canvas>
+      </div>
+    </div>
+    
+    <div class="chart-card card">
+      <h3>🍕 Popular Pizzas</h3>
+      <div class="chart-container">
+        <canvas #pizzaChart></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div class="tables-grid">
+    <!-- Popular Pizzas Table -->
+    <div class="table-card card">
+      <h3>🏆 Top Selling Pizzas</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Pizza</th>
+            <th>Orders</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pizza of popularPizzas; let i = index">
+            <td>
+              <span class="rank" [class.gold]="i === 0" [class.silver]="i === 1" [class.bronze]="i === 2">
+                {{ i + 1 }}
+              </span>
+            </td>
+            <td>{{ pizza.name }}</td>
+            <td>{{ pizza.orders }}</td>
+            <td>${{ pizza.revenue.toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Recent Orders Table -->
+    <div class="table-card card">
+      <h3>🕐 Recent Orders</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of recentOrders">
+            <td class="mono">{{ order.id }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.items }}</td>
+            <td>${{ order.total.toFixed(2) }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(order.status)">
+                {{ order.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
